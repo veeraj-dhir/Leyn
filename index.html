@@ -7,8 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLNa3onqF3Wk3M10cWrjb1XYVuij6h0Ok&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLNa3onqF3Wk3M10cWrjb1XYVuij6h0Ok&libraries=places&callback=initGoogleMap" async defer></script>
 <style>
 :root{
   --black:#0A0A0A; --card:#141414; --elev:#1C1C1C;
@@ -177,13 +176,13 @@ img{display:block;max-width:100%;}
 
 
 /* ========== MAP ========== */
-#map-container{position:absolute;top:var(--top);left:0;right:0;bottom:var(--nav);}
-#leaflet-map{width:100%;height:100%;}
-.leaflet-tile{filter:brightness(.76) saturate(.6) contrast(1.1);}
-.leaflet-container{background:#111 !important;}
-.leaflet-popup-content-wrapper{background:var(--card) !important;border:1px solid var(--dark) !important;border-radius:10px !important;box-shadow:0 8px 32px rgba(0,0,0,.6) !important;}
-.leaflet-popup-tip{background:var(--card) !important;}
-.leaflet-popup-content{color:var(--white) !important;margin:12px 14px !important;}
+#gmap{position:absolute;top:var(--top);left:0;right:0;bottom:var(--nav);}
+
+
+
+
+
+
 .map-search{position:absolute;top:calc(var(--top) + 10px);left:12px;right:12px;z-index:900;}
 .map-si{position:relative;}
 .map-si svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;stroke:var(--grey);fill:none;pointer-events:none;}
@@ -803,22 +802,20 @@ img{display:block;max-width:100%;}
      SCREEN 2: MAP
 ============================ -->
 <div class="screen" id="screen-map">
-  <div id="map-container">
-    <div id="leaflet-map"></div>
-  </div>
+  <div id="gmap"></div>
   <div class="map-search">
     <div class="map-si">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search routes, places...">
+      <input type="text" id="map-search-input" placeholder="Search routes, places..." oninput="searchPlaces(this.value)">
     </div>
   </div>
   <div class="map-chips">
-    <div class="chip active" onclick="fchip(this)">All</div>
-    <div class="chip" onclick="fchip(this)">Himalayas</div>
-    <div class="chip" onclick="fchip(this)">Ladakh</div>
-    <div class="chip" onclick="fchip(this)">Ghats</div>
-    <div class="chip" onclick="fchip(this)">Coastal</div>
-    <div class="chip" onclick="fchip(this)">Off-road</div>
+    <div class="chip active" onclick="fchip(this,'all')">All</div>
+    <div class="chip" onclick="fchip(this,'himalayas')">Himalayas</div>
+    <div class="chip" onclick="fchip(this,'ladakh')">Ladakh</div>
+    <div class="chip" onclick="fchip(this,'ghats')">Ghats</div>
+    <div class="chip" onclick="fchip(this,'coastal')">Coastal</div>
+    <div class="chip" onclick="fchip(this,'offroad')">Off-road</div>
   </div>
   <button class="map-sbtn" onclick="requireAuth()">⚡ Start Ride</button>
   <div class="rsheet" id="rsheet">
@@ -1122,7 +1119,6 @@ img{display:block;max-width:100%;}
   </div>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 let cur='hero', loggedIn=false, mapReady=false, obStep=1;
 
@@ -1137,7 +1133,7 @@ function showScreen(id){
   document.getElementById('bottom-nav').classList.toggle('hidden',!isNav);
   document.getElementById('fab').classList.toggle('show', id==='rides');
   if(isNav) syncNav(id);
-  if(id==='map') initMap();
+  if(id==='map'){ if(window.google && window.google.maps){ if(!mapReady) initGoogleMap(); else if(gmap) google.maps.event.trigger(gmap,'resize'); } }
   document.getElementById('modal').classList.remove('open');
 }
 
@@ -1316,128 +1312,218 @@ if(cEl) cObs.observe(cEl);
 
 
 // =====================
-// GOOGLE PLACES LAYER
+// GOOGLE MAPS + PLACES
 // =====================
+let gmap = null;
+let mapReady = false;
 let placesService = null;
-let placeMarkers = [];
+let infoWindow = null;
+let routePolylines = [];
+let activeRoutes = [];
 
-function loadPlacesNearRoute(map, center) {
-  if (!window.google || !window.google.maps) return;
-  
-  const el = document.createElement('div');
-  placesService = new google.maps.places.PlacesService(el);
-  
+const ROUTES = [
+  { name:'Manali–Leh Highway', df:'Extreme', sf:'Mixed Surface', sn:'Jun–Sep', ds:'490', el:'5,328', rd:'1.2K', color:'#ef4444', region:'ladakh',
+    path:[{lat:32.24,lng:77.19},{lat:32.5,lng:77.3},{lat:32.8,lng:77.5},{lat:33.2,lng:77.6},{lat:33.7,lng:77.7},{lat:34.1,lng:77.55},{lat:34.16,lng:77.58}] },
+  { name:'Spiti Valley Circuit', df:'Hard', sf:'Mountain Road', sn:'May–Oct', ds:'580', el:'4,587', rd:'890', color:'#f97316', region:'himalayas',
+    path:[{lat:31.5,lng:77.1},{lat:31.8,lng:77.3},{lat:32.0,lng:77.7},{lat:32.3,lng:78.0},{lat:32.1,lng:78.3},{lat:31.9,lng:78.0},{lat:31.5,lng:77.1}] },
+  { name:'Bangalore–Coorg Loop', df:'Moderate', sf:'Tarmac', sn:'Oct–Feb', ds:'212', el:'1,100', rd:'2.1K', color:'#D4FF00', region:'ghats',
+    path:[{lat:12.97,lng:77.59},{lat:12.7,lng:77.2},{lat:12.4,lng:76.9},{lat:12.3,lng:75.8},{lat:12.5,lng:75.7},{lat:12.97,lng:77.59}] },
+  { name:'Pune–Mahabaleshwar', df:'Hard', sf:'Tarmac + Ghats', sn:'Oct–Mar', ds:'340', el:'1,438', rd:'780', color:'#f97316', region:'ghats',
+    path:[{lat:18.52,lng:73.86},{lat:18.3,lng:73.6},{lat:17.9,lng:73.4},{lat:17.6,lng:73.7},{lat:17.8,lng:73.9},{lat:18.52,lng:73.86}] },
+  { name:'Coastal NH66 Run', df:'Moderate', sf:'Tarmac', sn:'Nov–Feb', ds:'320', el:'180', rd:'1.4K', color:'#D4FF00', region:'coastal',
+    path:[{lat:15.0,lng:74.0},{lat:14.5,lng:74.1},{lat:13.5,lng:74.8},{lat:12.9,lng:74.85},{lat:11.9,lng:75.4},{lat:10.8,lng:76.0}] }
+];
+
+// Dark map style for Google Maps
+const DARK_STYLE = [
+  {elementType:'geometry',stylers:[{color:'#1a1a1a'}]},
+  {elementType:'labels.text.fill',stylers:[{color:'#757575'}]},
+  {elementType:'labels.text.stroke',stylers:[{color:'#212121'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#2c2c2c'}]},
+  {featureType:'road',elementType:'geometry.stroke',stylers:[{color:'#212121'}]},
+  {featureType:'road',elementType:'labels.text.fill',stylers:[{color:'#9e9e9e'}]},
+  {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#3c3c3c'}]},
+  {featureType:'road.highway',elementType:'geometry.stroke',stylers:[{color:'#1f1f1f'}]},
+  {featureType:'road.highway',elementType:'labels.text.fill',stylers:[{color:'#f3d19c'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#0d1b2a'}]},
+  {featureType:'water',elementType:'labels.text.fill',stylers:[{color:'#3d3d3d'}]},
+  {featureType:'poi',stylers:[{visibility:'off'}]},
+  {featureType:'transit',stylers:[{visibility:'off'}]},
+  {featureType:'administrative',elementType:'geometry',stylers:[{color:'#757575'}]},
+  {featureType:'administrative.country',elementType:'labels.text.fill',stylers:[{color:'#9e9e9e'}]},
+  {featureType:'administrative.locality',elementType:'labels.text.fill',stylers:[{color:'#bdbdbd'}]},
+  {featureType:'landscape',elementType:'geometry',stylers:[{color:'#141414'}]}
+];
+
+function initGoogleMap() {
+  gmap = new google.maps.Map(document.getElementById('gmap'), {
+    center: { lat: 22, lng: 78 },
+    zoom: 5,
+    styles: DARK_STYLE,
+    disableDefaultUI: true,
+    zoomControl: true,
+    gestureHandling: 'greedy',
+    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER }
+  });
+
+  infoWindow = new google.maps.InfoWindow();
+  placesService = new google.maps.places.PlacesService(gmap);
+
+  // Draw all routes
+  drawAllRoutes(ROUTES);
+
+  // Load places when map stops moving
+  gmap.addListener('idle', () => {
+    if (gmap.getZoom() >= 9) loadNearbyPlaces();
+  });
+
+  mapReady = true;
+}
+
+function drawAllRoutes(routes) {
+  routePolylines.forEach(p => p.setMap(null));
+  routePolylines = [];
+  activeRoutes = routes;
+
+  routes.forEach(r => {
+    const poly = new google.maps.Polyline({
+      path: r.path,
+      geodesic: true,
+      strokeColor: r.color,
+      strokeOpacity: 0.9,
+      strokeWeight: 4,
+      map: gmap
+    });
+
+    // Start marker
+    const marker = new google.maps.Marker({
+      position: r.path[0],
+      map: gmap,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 8,
+        fillColor: r.color,
+        fillOpacity: 1,
+        strokeColor: '#0A0A0A',
+        strokeWeight: 2
+      },
+      title: r.name
+    });
+
+    poly.addListener('click', () => openSheet(r));
+    marker.addListener('click', () => openSheet(r));
+    routePolylines.push(poly);
+  });
+}
+
+function loadNearbyPlaces() {
+  const center = gmap.getCenter();
   const types = [
-    { type: 'restaurant', emoji: '🍽️', label: 'Restaurant' },
-    { type: 'gas_station', emoji: '⛽', label: 'Fuel Stop' },
-    { type: 'lodging', emoji: '🏨', label: 'Hotel' },
-    { type: 'car_repair', emoji: '🔧', label: 'Mechanic' }
+    { type:'restaurant', emoji:'🍽️', label:'Restaurant' },
+    { type:'gas_station', emoji:'⛽', label:'Fuel Stop' },
+    { type:'lodging', emoji:'🏨', label:'Hotel' },
+    { type:'car_repair', emoji:'🔧', label:'Mechanic' }
   ];
-
   types.forEach(t => {
-    placesService.nearbySearch({
-      location: center,
-      radius: 50000,
-      type: t.type
-    }, (results, status) => {
+    placesService.nearbySearch({ location:center, radius:30000, type:t.type }, (results, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        results.slice(0, 8).forEach(place => {
-          addPlacePin(map, place, t.emoji, t.label);
-        });
+        results.slice(0,6).forEach(place => addPlaceMarker(place, t.emoji, t.label));
       }
     });
   });
 }
 
-function addPlacePin(map, place, emoji, label) {
-  const lat = place.geometry.location.lat();
-  const lng = place.geometry.location.lng();
-  
-  const icon = L.divIcon({
-    html: `<div style="background:rgba(18,18,18,.96);border:1.5px solid rgba(212,255,0,.35);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4);">${emoji}</div>`,
-    className: '', iconSize: [32, 32]
+function addPlaceMarker(place, emoji, label) {
+  const marker = new google.maps.Marker({
+    position: place.geometry.location,
+    map: gmap,
+    icon: {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+          <circle cx="18" cy="18" r="16" fill="#141414" stroke="rgba(212,255,0,0.5)" stroke-width="1.5"/>
+          <text x="18" y="24" text-anchor="middle" font-size="16">${emoji}</text>
+        </svg>`),
+      scaledSize: new google.maps.Size(36, 36),
+      anchor: new google.maps.Point(18, 18)
+    }
   });
-  
-  const marker = L.marker([lat, lng], { icon }).addTo(window._map);
-  
-  marker.on('click', () => {
-    placesService.getDetails({ placeId: place.place_id, fields: ['name','rating','photos','formatted_address','opening_hours','formatted_phone_number','reviews','types'] }, (detail, status) => {
-      if (status !== google.maps.places.PlacesServiceStatus.OK) return;
-      showPlaceCard(detail, emoji, label);
+
+  marker.addListener('click', () => {
+    placesService.getDetails({
+      placeId: place.place_id,
+      fields: ['name','rating','photos','formatted_address','opening_hours','formatted_phone_number','reviews']
+    }, (detail, status) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) showPlaceCard(detail, emoji, label);
     });
   });
-  
-  placeMarkers.push(marker);
 }
 
 function showPlaceCard(place, emoji, label) {
   const existing = document.getElementById('place-card');
   if (existing) existing.remove();
 
-  const rating = place.rating ? '★'.repeat(Math.round(place.rating)) + ' ' + place.rating : 'No rating';
-  const phone = place.formatted_phone_number || '';
-  const address = place.formatted_address || '';
-  const open = place.opening_hours ? (place.opening_hours.isOpen() ? '<span style="color:#22c55e;">Open Now</span>' : '<span style="color:#ef4444;">Closed</span>') : '';
-  
-  let photosHTML = '';
+  const rating = place.rating ? '⭐ ' + place.rating + ' / 5' : '';
+  const open = place.opening_hours ? (place.opening_hours.isOpen() ? '<span style="color:#22c55e;font-weight:700;">Open Now</span>' : '<span style="color:#ef4444;font-weight:700;">Closed</span>') : '';
+  let photoHTML = '';
   if (place.photos && place.photos.length > 0) {
-    const photoUrl = place.photos[0].getUrl({ maxWidth: 400, maxHeight: 220 });
-    photosHTML = `<img src="${photoUrl}" style="width:100%;height:180px;object-fit:cover;border-radius:10px 10px 0 0;display:block;" alt="">`;
+    photoHTML = `<img src="${place.photos[0].getUrl({maxWidth:500,maxHeight:240})}" style="width:100%;height:190px;object-fit:cover;border-radius:16px 16px 0 0;display:block;">`;
   }
-
-  let reviewsHTML = '';
+  let reviewHTML = '';
   if (place.reviews && place.reviews.length > 0) {
-    const rev = place.reviews[0];
-    reviewsHTML = `
-      <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:12px;margin-top:10px;">
-        <div style="font-size:11px;color:#888;margin-bottom:5px;">${rev.author_name} · ${'★'.repeat(rev.rating)}</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;">"${rev.text.substring(0,120)}..."</div>
-      </div>`;
+    const r = place.reviews[0];
+    reviewHTML = `<div style="background:rgba(255,255,255,.05);border-radius:8px;padding:12px;margin-top:10px;"><div style="font-size:11px;color:#888;margin-bottom:4px;">${r.author_name} · ${'★'.repeat(r.rating)}</div><div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;">"${r.text.substring(0,140)}..."</div></div>`;
   }
 
   const card = document.createElement('div');
   card.id = 'place-card';
-  card.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#141414;border-radius:20px 20px 0 0;border-top:1px solid #2A2A2A;z-index:950;max-height:80vh;overflow-y:auto;animation:smu .3s cubic-bezier(.32,.72,0,1);';
+  card.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#141414;border-radius:20px 20px 0 0;border-top:1px solid #2A2A2A;z-index:9999;max-height:82vh;overflow-y:auto;animation:smu .3s cubic-bezier(.32,.72,0,1);';
   card.innerHTML = `
-    ${photosHTML}
-    <div style="padding:16px 18px 40px;">
+    ${photoHTML}
+    <div style="padding:16px 18px 44px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">${emoji} ${place.name}</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:21px;text-transform:uppercase;margin-bottom:3px;">${emoji} ${place.name}</div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#D4FF00;">${label}</div>
         </div>
-        <div onclick="document.getElementById('place-card').remove()" style="color:#888;font-size:24px;cursor:pointer;padding:0 4px;">✕</div>
+        <div onclick="document.getElementById('place-card').remove()" style="color:#888;font-size:26px;cursor:pointer;padding:0 4px;line-height:1;">✕</div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:#D4FF00;">${rating}</span>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:#D4FF00;">${rating}</span>
         ${open}
       </div>
-      <div style="font-size:12px;color:#888;margin-bottom:${phone ? '8px' : '0'};">${address}</div>
-      ${phone ? `<div style="font-size:13px;color:rgba(255,255,255,.8);">📞 ${phone}</div>` : ''}
-      ${reviewsHTML}
-      ${phone ? `<a href="tel:${phone}" style="display:block;margin-top:14px;background:#D4FF00;color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;letter-spacing:2px;text-transform:uppercase;padding:13px;border-radius:7px;text-align:center;text-decoration:none;">Call Now</a>` : ''}
+      <div style="font-size:12px;color:#888;line-height:1.5;margin-bottom:${place.formatted_phone_number?'10px':'0'}">${place.formatted_address||''}</div>
+      ${place.formatted_phone_number?`<div style="font-size:13px;color:rgba(255,255,255,.8);">📞 ${place.formatted_phone_number}</div>`:''}
+      ${reviewHTML}
+      ${place.formatted_phone_number?`<a href="tel:${place.formatted_phone_number}" style="display:block;margin-top:16px;background:#D4FF00;color:#000;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;letter-spacing:2px;text-transform:uppercase;padding:14px;border-radius:8px;text-align:center;text-decoration:none;">📞 Call Now</a>`:''}
     </div>`;
   document.body.appendChild(card);
 }
 
-// Hook into map init to load places
-const _origInitMap = initMap;
-initMap = function() {
-  _origInitMap();
-  setTimeout(() => {
-    if (window._map) {
-      const center = window._map.getCenter();
-      loadPlacesNearRoute(window._map, { lat: center.lat, lng: center.lng });
-      window._map.on('moveend', () => {
-        placeMarkers.forEach(m => window._map.removeLayer(m));
-        placeMarkers = [];
-        const c = window._map.getCenter();
-        loadPlacesNearRoute(window._map, { lat: c.lat, lng: c.lng });
-      });
+function searchPlaces(query) {
+  if (!query || query.length < 3 || !gmap) return;
+  const service = new google.maps.places.PlacesService(gmap);
+  service.textSearch({ query, location: gmap.getCenter(), radius: 500000 }, (results, status) => {
+    if (status === google.maps.places.PlacesServiceStatus.OK && results && results[0]) {
+      gmap.setCenter(results[0].geometry.location);
+      gmap.setZoom(12);
     }
-  }, 800);
-};
+  });
+}
 
+function fchip(el, filter) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  if (filter === 'all') { drawAllRoutes(ROUTES); return; }
+  const filtered = ROUTES.filter(r => r.region === filter);
+  drawAllRoutes(filtered.length ? filtered : ROUTES);
+  if (filtered.length && gmap) {
+    const bounds = new google.maps.LatLngBounds();
+    filtered.forEach(r => r.path.forEach(p => bounds.extend(p)));
+    gmap.fitBounds(bounds, { padding:50 });
+  }
+}
+
+function initMap() { if(!mapReady && window.google && window.google.maps) initGoogleMap(); }
 
 showScreen('hero');
 </script>

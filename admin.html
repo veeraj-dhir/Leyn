@@ -6,8 +6,7 @@
 <title>Leyn Admin — Route Manager</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLNa3onqF3Wk3M10cWrjb1XYVuij6h0Ok&libraries=places,geometry" async defer onload="initAdminMap()"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--black:#0A0A0A;--card:#141414;--dark:#2A2A2A;--y:#D4FF00;--white:#fff;--grey:#888;--fh:'Barlow Condensed',sans-serif;--fp:'Inter',sans-serif;}
@@ -84,8 +83,7 @@ body{background:var(--black);color:var(--white);font-family:var(--fp);min-height
 
 /* MAP */
 #admin-map{width:100%;height:100%;}
-.leaflet-tile{filter:brightness(.78) saturate(.6) contrast(1.1);}
-.leaflet-container{background:#111 !important;}
+
 
 /* MAP CONTROLS */
 .map-controls{position:absolute;top:16px;right:16px;z-index:500;display:flex;flex-direction:column;gap:8px;}
@@ -268,7 +266,7 @@ body{background:var(--black);color:var(--white);font-family:var(--fp);min-height
         <button class="mc-btn active" id="btn-draw" onclick="setMode('draw')">✏️ Draw Route</button>
         <button class="mc-btn" id="btn-view" onclick="setMode('view')">👁 View All</button>
         <button class="mc-btn" id="btn-poi" onclick="setMode('poi')">📍 Add POI</button>
-        <button class="mc-btn" onclick="adminMap.setView([22, 78], 5)">🌏 Reset View</button>
+        <button class="mc-btn" onclick="adminMap.setCenter({lat:22,lng:78}); adminMap.setZoom(5);">🌏 Reset View</button>
       </div>
 
       <div class="map-hint" id="map-hint">Click on map to add route waypoints</div>
@@ -287,28 +285,51 @@ let savedRoutes = JSON.parse(localStorage.getItem('leyn_routes') || '[]');
 let gpxCoords = [];
 
 // INIT MAP
-document.addEventListener('DOMContentLoaded', () => {
-  adminMap = L.map('admin-map', { center:[22, 78], zoom:5, zoomControl:true, attributionControl:false });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:18 }).addTo(adminMap);
-  adminMap.on('click', onMapClick);
+const DARK_STYLE=[{elementType:'geometry',stylers:[{color:'#1a1a1a'}]},{elementType:'labels.text.fill',stylers:[{color:'#757575'}]},{elementType:'labels.text.stroke',stylers:[{color:'#212121'}]},{featureType:'road',elementType:'geometry',stylers:[{color:'#2c2c2c'}]},{featureType:'road.highway',elementType:'geometry',stylers:[{color:'#3c3c3c'}]},{featureType:'water',elementType:'geometry',stylers:[{color:'#0d1b2a'}]},{featureType:'poi',stylers:[{visibility:'off'}]},{featureType:'transit',stylers:[{visibility:'off'}]},{featureType:'landscape',elementType:'geometry',stylers:[{color:'#141414'}]}];
+
+function initAdminMap() {
+  adminMap = new google.maps.Map(document.getElementById('admin-map'), {
+    center: { lat:22, lng:78 },
+    zoom: 5,
+    styles: DARK_STYLE,
+    disableDefaultUI: false,
+    zoomControl: true,
+    mapTypeControl: true,
+    mapTypeControlOptions: { style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR, position: google.maps.ControlPosition.TOP_LEFT },
+    streetViewControl: false,
+    fullscreenControl: false,
+    gestureHandling: 'greedy'
+  });
+  adminMap.addListener('click', e => onMapClick(e));
   loadAllRoutes();
   updateStats();
-});
+  loadSavedRoutesOnMap();
+}
+
+function loadSavedRoutesOnMap() {
+  savedRoutes.forEach(r => {
+    if (r.coords && r.coords.length > 1) {
+      const path = r.coords.map(c => Array.isArray(c) ? {lat:c[0],lng:c[1]} : c);
+      new google.maps.Polyline({ path, strokeColor: DIFF_COLORS[r.diff]||'#D4FF00', strokeWeight:3, strokeOpacity:.7, map:adminMap });
+    }
+  });
+}
 
 function onMapClick(e) {
-  if (mode === 'draw') addWaypoint(e.latlng);
-  if (mode === 'poi')  addPOIMarker(e.latlng);
+  if (mode === 'draw') addWaypoint(e.latLng);
+  if (mode === 'poi')  addPOIMarker(e.latLng);
 }
 
 // WAYPOINTS
-function addWaypoint(latlng) {
-  waypoints.push(latlng);
+function addWaypoint(latLng) {
+  waypoints.push(latLng);
   const num = waypoints.length;
-  const ic = L.divIcon({
-    html:`<div style="background:var(--black,#0A0A0A);border:2px solid #D4FF00;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#D4FF00;font-family:sans-serif">${num}</div>`,
-    className:'', iconSize:[26,26]
+  const m = new google.maps.Marker({
+    position: latLng,
+    map: adminMap,
+    label: { text: String(num), color:'#000', fontWeight:'900', fontSize:'12px' },
+    icon: { path: google.maps.SymbolPath.CIRCLE, scale:14, fillColor:'#D4FF00', fillOpacity:1, strokeColor:'#0A0A0A', strokeWeight:2 }
   });
-  const m = L.marker(latlng, { icon:ic }).addTo(adminMap);
   waypointMarkers.push(m);
   renderWaypointsList();
   if (waypoints.length >= 2) drawRouteLine();
@@ -327,36 +348,35 @@ function renderWaypointsList() {
 
 function removeWaypoint(i) {
   waypoints.splice(i, 1);
-  waypointMarkers.forEach(m => adminMap.removeLayer(m));
+  waypointMarkers.forEach(m => m.setMap(null));
   waypointMarkers = [];
-  waypoints.forEach(wp => {
-    const n = waypointMarkers.length + 1;
-    const ic = L.divIcon({ html:`<div style="background:#0A0A0A;border:2px solid #D4FF00;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#D4FF00;">${n}</div>`, className:'', iconSize:[26,26] });
-    waypointMarkers.push(L.marker(wp, { icon:ic }).addTo(adminMap));
+  waypoints.forEach((wp,i) => {
+    const m = new google.maps.Marker({ position:wp, map:adminMap, label:{text:String(i+1),color:'#000',fontWeight:'900',fontSize:'12px'}, icon:{path:google.maps.SymbolPath.CIRCLE,scale:14,fillColor:'#D4FF00',fillOpacity:1,strokeColor:'#0A0A0A',strokeWeight:2} });
+    waypointMarkers.push(m);
   });
-  if (routePolyline) { adminMap.removeLayer(routePolyline); routePolyline = null; }
+  if (routePolyline) { routePolyline.setMap(null); routePolyline = null; }
   if (waypoints.length >= 2) drawRouteLine();
   renderWaypointsList();
 }
 
 function drawRouteLine() {
-  if (routePolyline) adminMap.removeLayer(routePolyline);
+  if (routePolyline) routePolyline.setMap(null);
   const diff = document.getElementById('r-diff')?.value || 'Hard';
-  routePolyline = L.polyline(waypoints, { color: DIFF_COLORS[diff] || '#D4FF00', weight:4, opacity:.9 }).addTo(adminMap);
+  routePolyline = new google.maps.Polyline({ path:waypoints, strokeColor:DIFF_COLORS[diff]||'#D4FF00', strokeWeight:4, strokeOpacity:.9, map:adminMap });
 }
 
 function previewRoute() {
   if (waypoints.length < 2) { toast('Add at least 2 waypoints first'); return; }
   drawRouteLine();
-  adminMap.fitBounds(routePolyline.getBounds(), { padding:[30,30] });
+  const pb = new google.maps.LatLngBounds(); waypoints.forEach(p=>pb.extend(p)); adminMap.fitBounds(pb, 40);
   toast('Route preview ready — looking good?');
 }
 
 function clearWaypoints() {
   waypoints = [];
-  waypointMarkers.forEach(m => adminMap.removeLayer(m));
+  waypointMarkers.forEach(m => m.setMap(null));
   waypointMarkers = [];
-  if (routePolyline) { adminMap.removeLayer(routePolyline); routePolyline = null; }
+  if (routePolyline) { routePolyline.setMap(null); routePolyline = null; }
   renderWaypointsList();
 }
 
@@ -379,7 +399,7 @@ function saveRoute() {
     season: document.getElementById('r-season').value,
     region: document.getElementById('r-region').value,
     desc: document.getElementById('r-desc').value,
-    coords: waypoints.map(w => [w.lat, w.lng]),
+    coords: waypoints.map(w => [w.lat(), w.lng()]),
     distance: calcDistance(waypoints).toFixed(0),
     color: DIFF_COLORS[diff],
     status: 'live',
@@ -421,7 +441,7 @@ function importGPX(input) {
       // Draw on map
       if (routePolyline) adminMap.removeLayer(routePolyline);
       routePolyline = L.polyline(gpxCoords, { color:'#D4FF00', weight:4, opacity:.9 }).addTo(adminMap);
-      adminMap.fitBounds(routePolyline.getBounds(), { padding:[30,30] });
+      const pb = new google.maps.LatLngBounds(); waypoints.forEach(p=>pb.extend(p)); adminMap.fitBounds(pb, 40);
 
       const distKm = calcDistanceArr(gpxCoords).toFixed(0);
       const trackName = xml.querySelector('name')?.textContent || file.name.replace('.gpx','');
@@ -466,7 +486,7 @@ function resetGPX() {
   document.getElementById('gpx-preview').style.display = 'none';
   document.getElementById('gpx-file').value = '';
   gpxCoords = [];
-  if (routePolyline) { adminMap.removeLayer(routePolyline); routePolyline = null; }
+  if (routePolyline) { routePolyline.setMap(null); routePolyline = null; }
 }
 
 // MANAGE
@@ -506,7 +526,7 @@ function viewRouteOnMap(id) {
   if (!r) return;
   if (routePolyline) adminMap.removeLayer(routePolyline);
   routePolyline = L.polyline(r.coords, { color: r.color || '#D4FF00', weight:4, opacity:.9 }).addTo(adminMap);
-  adminMap.fitBounds(routePolyline.getBounds(), { padding:[30,30] });
+  const pb = new google.maps.LatLngBounds(); waypoints.forEach(p=>pb.extend(p)); adminMap.fitBounds(pb, 40);
   toast(`Viewing: ${r.name}`);
 }
 
@@ -532,9 +552,10 @@ function setMode(m) {
   document.getElementById('map-hint').textContent = hints[m] || '';
 }
 
-function addPOIMarker(latlng) {
-  const ic = L.divIcon({ html:'<div style="background:rgba(18,18,18,.96);border:1.5px solid rgba(212,255,0,.4);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:15px;">📍</div>', className:'', iconSize:[30,30] });
-  L.marker(latlng, { icon:ic }).addTo(adminMap).bindPopup('<input placeholder="POI name" style="background:#141414;color:#fff;border:1px solid #2A2A2A;padding:6px;border-radius:5px;width:150px;font-size:13px;">').openPopup();
+function addPOIMarker(latLng) {
+  const m = new google.maps.Marker({ position:latLng, map:adminMap, icon:{url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34"><circle cx="17" cy="17" r="15" fill="rgba(18,18,18,.96)" stroke="rgba(212,255,0,.4)" stroke-width="1.5"/><text x="17" y="23" text-anchor="middle" font-size="16">📍</text></svg>'),scaledSize:new google.maps.Size(34,34),anchor:new google.maps.Point(17,17)} });
+  const iw = new google.maps.InfoWindow({ content:'<input placeholder="POI name" style="background:#141414;color:#fff;border:1px solid #2A2A2A;padding:6px;border-radius:5px;width:150px;font-size:13px;">' });
+  iw.open(adminMap, m);
 }
 
 // HELPERS
@@ -552,7 +573,7 @@ function updateStats() {
 
 function calcDistance(wps) {
   let d = 0;
-  for (let i=1;i<wps.length;i++) d += wps[i-1].distanceTo(wps[i]);
+  for (let i=1;i<wps.length;i++) d += google.maps.geometry.spherical.computeDistanceBetween(wps[i-1],wps[i]);
   return d / 1000;
 }
 

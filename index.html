@@ -168,32 +168,43 @@ img{display:block;max-width:100%;}
 .stitle{font-family:var(--fh);font-weight:900;font-size:30px;text-transform:uppercase;letter-spacing:-.5px;line-height:1;margin-bottom:22px;}
 .stitle span{color:var(--y);}
 
-/* Feature cards */
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.fc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 13px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:border-color .25s,transform .25s;}
-.fc:active{transform:scale(.97);}
-.fc-i{font-size:22px;}
-.fc-n{font-family:var(--fh);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.3px;}
-.fc-d{font-size:11px;color:var(--sub);line-height:1.5;flex:1;}
-.fc-a{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--y);margin-top:4px;}
+/* Feature blocks — side-by-side, alternating image-left/image-right */
+.fblocks{display:flex;flex-direction:column;gap:34px;}
+.fblock{cursor:pointer;display:flex;align-items:center;gap:14px;}
+.fblock:nth-child(even){flex-direction:row-reverse;}
+.fblock-img{position:relative;flex:0 0 44%;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background-size:cover;background-position:center;background-color:var(--card2);}
+.fblock-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,9,15,.55),transparent 50%);}
+.fblock-badge{position:absolute;left:9px;bottom:9px;right:9px;z-index:1;background:rgba(8,9,15,.55);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:7px 9px;display:flex;flex-direction:column;gap:1px;}
+.fblock-badge b{display:block;font-family:var(--fh);font-weight:800;font-size:12px;color:var(--w);}
+.fblock-badge small{font-family:var(--fh);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--y);}
+.fblock-body{flex:1;min-width:0;}
+.fblock-title{font-family:var(--fh);font-weight:900;font-size:19px;text-transform:uppercase;letter-spacing:-.3px;line-height:1.08;margin-bottom:7px;}
+.fblock-title span{color:var(--y);}
+.fblock-desc{font-size:12px;color:var(--sub);line-height:1.55;margin-bottom:7px;}
+.fblock-link{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);}
 
 /* Route scroll */
 .rtscroll{display:flex;gap:12px;overflow-x:auto;padding:0 20px 4px;margin:0 -20px;}
 .rp{flex-shrink:0;width:185px;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;}
-.rpimg{width:100%;height:108px;background-size:cover;background-position:center;background-color:var(--card2);}
+.rpimg{position:relative;width:100%;height:108px;background-size:cover;background-position:center;background-color:var(--card2);}
+.rpimg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,9,15,.65),transparent 60%);}
+.rpd-float{position:absolute;left:8px;bottom:8px;z-index:1;font-family:var(--fh);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);background:rgba(8,9,15,.55);backdrop-filter:blur(6px);padding:3px 8px;border-radius:5px;border:1px solid rgba(255,255,255,.12);}
 .rpb{padding:10px;}
-.rpd{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);margin-bottom:3px;}
 .rpn{font-family:var(--fh);font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px;}
 .rpss{display:flex;gap:10px;}
 .rps{font-family:var(--fh);font-size:11px;color:var(--sub);}
 .rps b{color:var(--w);font-size:12px;display:block;}
 
-/* How it works */
-.hiw-row{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--border);}
-.hiw-row:last-child{border:none;}
-.hiw-n{width:36px;height:36px;flex-shrink:0;border-radius:50%;border:2px solid var(--y);background:var(--yd);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:900;font-size:16px;color:var(--y);}
-.hiw-name{font-family:var(--fh);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px;}
-.hiw-d{font-size:12px;color:var(--sub);line-height:1.5;}
+/* How it works — one photo, floating numbered steps */
+.hiw-photo{position:relative;width:100%;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:url('https://images.unsplash.com/photo-1547906250-5bdf142c606d?w=800&q=85&fit=crop') center/cover;}
+.hiw-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(8,9,15,.15),rgba(8,9,15,.55));}
+.hiw-step{position:absolute;left:16px;right:16px;z-index:1;display:flex;gap:12px;align-items:flex-start;background:rgba(8,9,15,.55);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:13px 15px;}
+.hiw-step:nth-child(2){top:8%;}
+.hiw-step:nth-child(3){top:40%;}
+.hiw-step:nth-child(4){top:72%;}
+.hiw-n{width:28px;height:28px;flex-shrink:0;border-radius:50%;border:2px solid var(--y);background:var(--yd);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-weight:900;font-size:13px;color:var(--y);}
+.hiw-name{font-family:var(--fh);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px;color:var(--w);}
+.hiw-d{font-size:11px;color:rgba(255,255,255,.65);line-height:1.4;}
 
 /* Manifesto */
 .mf-hl{font-family:var(--fh);font-weight:900;font-size:24px;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:24px;color:rgba(255,255,255,.5);}
@@ -201,8 +212,10 @@ img{display:block;max-width:100%;}
 .mf-line{font-family:var(--fh);font-weight:700;font-size:17px;text-transform:uppercase;color:var(--w);padding:14px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;line-height:1.2;}
 .mf-line::before{content:'→';color:var(--y);flex-shrink:0;}
 
-/* Counter */
-.csec{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:40px 20px;display:flex;flex-direction:column;gap:20px;}
+/* Counter — full photo backdrop, glass content on top */
+.csec{position:relative;padding:44px 20px;display:flex;flex-direction:column;gap:20px;background:url('https://images.unsplash.com/photo-1690540293162-bfb097e68a34?w=1000&q=85&fit=crop') center/cover;overflow:hidden;}
+.csec::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,9,15,.55),rgba(8,9,15,.92) 40%,var(--bg));}
+.csec>*{position:relative;z-index:1;}
 .live-row{display:flex;align-items:center;gap:8px;}
 .ldot{width:7px;height:7px;border-radius:50%;background:#ef4444;animation:lp 1.5s infinite;}
 @keyframes lp{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.4);}}
@@ -210,40 +223,48 @@ img{display:block;max-width:100%;}
 .cnum{font-family:var(--fh);font-weight:900;font-size:72px;color:var(--y);line-height:1;}
 .cof{font-family:var(--fh);font-weight:700;font-size:20px;color:var(--sub);}
 .clbl{font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-top:-8px;}
-.cbar{width:100%;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.cbar{width:100%;height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;}
 .cbarfill{height:100%;background:var(--y);border-radius:3px;width:0;transition:width 2s cubic-bezier(.4,0,.2,1);}
-.cspots{font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.cspots{font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5);}
 .cspots span{color:var(--w);}
-.coffer{background:var(--card2);border:1px solid rgba(212,255,0,.25);border-radius:12px;padding:18px;}
+.coffer{background:rgba(8,9,15,.6);backdrop-filter:blur(10px);border:1px solid rgba(212,255,0,.3);border-radius:12px;padding:18px;}
 .cobadge{font-family:var(--fh);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--y);margin-bottom:9px;}
 .cotitle{font-family:var(--fh);font-weight:900;font-size:19px;text-transform:uppercase;line-height:1.1;margin-bottom:12px;}
 .cotitle span{color:var(--y);}
 .colines{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
-.coline{font-size:13px;color:rgba(255,255,255,.7);}
+.coline{font-size:13px;color:rgba(255,255,255,.8);}
 .conote{font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);}
-.spirit{border-top:1px solid var(--border);padding-top:20px;}
+.spirit{border-top:1px solid rgba(255,255,255,.15);padding-top:20px;}
 .spirit-t{font-family:var(--fh);font-weight:900;font-size:24px;text-transform:uppercase;line-height:1;color:var(--y);margin-bottom:10px;}
-.spirit-d{font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;}
+.spirit-d{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;}
 
-/* Testimonials */
-.tlist{display:flex;flex-direction:column;gap:10px;}
-.tc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+/* Testimonials — lighter, no boxes, photo backdrop strip */
+.tstrip{position:relative;padding:44px 0;overflow:hidden;}
+.tstrip-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1598548841213-9cdbcdf8ec47?w=1000&q=85&fit=crop') center 30%/cover;}
+.tstrip-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,rgba(8,9,15,.65) 18%,rgba(8,9,15,.88) 85%,var(--bg) 100%);}
+.tstrip>*{position:relative;z-index:1;}
+.tstrip .sec{padding-top:0;}
+.tlist{display:flex;flex-direction:column;gap:26px;padding:0 20px;}
+.tc{padding:0;}
 .tst{color:var(--y);font-size:12px;margin-bottom:8px;letter-spacing:3px;}
-.ttxt{font-size:13px;color:rgba(255,255,255,.75);line-height:1.65;font-style:italic;margin-bottom:10px;}
+.ttxt{font-size:14px;color:rgba(255,255,255,.85);line-height:1.65;font-style:italic;margin-bottom:12px;}
 .trider{display:flex;align-items:center;gap:9px;}
-.tav{width:30px;height:30px;border-radius:50%;object-fit:cover;border:1.5px solid var(--y);}
-.tname{font-family:var(--fh);font-weight:700;font-size:13px;}
+.tav{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid var(--y);}
+.tname{font-family:var(--fh);font-weight:700;font-size:13px;color:var(--w);}
 .tbike{font-size:11px;color:var(--sub);}
 
-/* CTA */
-.lcta{padding:48px 20px 40px;text-align:center;}
+/* CTA — full-bleed photo */
+.lcta{position:relative;padding:56px 20px 44px;text-align:center;background:url('https://images.unsplash.com/photo-1643913236750-39f654883299?w=1000&q=85&fit=crop') center/cover;overflow:hidden;}
+.lcta::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,rgba(8,9,15,.5) 25%,rgba(8,9,15,.85) 80%,var(--bg) 100%);}
+.lcta>*{position:relative;z-index:1;}
 .lctat{font-family:var(--fb);font-size:16px;line-height:1.4;margin-bottom:8px;}
 .lctat span{color:var(--y);}
-.lctas{font-size:13px;color:var(--sub);margin-bottom:26px;line-height:1.6;}
+.lctas{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:26px;line-height:1.6;}
 .lctabtns{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
 .lctabtns .by,.lctabtns .bo{border-radius:8px;}
 .lctafoot{font-size:13px;color:var(--sub);}
 .lctafoot span{color:var(--y);cursor:pointer;}
+
 
 /* Footer */
 .hfoot{background:var(--card);border-top:1px solid var(--border);padding:24px 20px 40px;text-align:center;}
@@ -321,6 +342,32 @@ img{display:block;max-width:100%;}
 .empt-ic{font-size:44px;margin-bottom:12px;}
 .empt-t{font-family:var(--fh);font-size:20px;text-transform:uppercase;margin-bottom:7px;}
 .empt-s{font-size:13px;color:var(--sub);}
+
+/* ── CREATE RIDE ── */
+#scr.on{display:flex;flex-direction:column;}
+.crstep{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+#crmap{width:100%;height:38vh;min-height:220px;background:var(--card);position:relative;flex-shrink:0;}
+.crNoKey{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:13px;color:var(--sub);line-height:1.6;}
+.crNoKey code{color:var(--y);font-family:monospace;}
+.crpanel{flex:1;overflow-y:auto;padding:16px;}
+.crfield{margin-bottom:14px;}
+.crfield label{display:block;font-family:var(--fh);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--sub);margin-bottom:6px;}
+.crfield input,.crfield select,.crfield textarea{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:11px 12px;color:var(--w);font-size:14px;font-family:inherit;}
+.crfield textarea{resize:vertical;min-height:70px;}
+.crfield input::placeholder,.crfield textarea::placeholder{color:var(--sub);}
+.crstoprow{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.crstoprow input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--w);font-size:13px;}
+.crstoprow button{width:32px;height:32px;flex-shrink:0;border-radius:8px;background:var(--card2);border:1px solid var(--border);color:var(--sub);font-size:15px;}
+.crAddStop{width:100%;background:transparent;border:1px dashed var(--border);color:var(--y);font-family:var(--fh);font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:10px;border-radius:8px;margin-bottom:14px;}
+.crsummary{display:none;justify-content:space-around;background:var(--yd);border:1px solid var(--yg);border-radius:10px;padding:12px;margin-bottom:14px;}
+.crsummary span{font-family:var(--fh);font-weight:800;color:var(--y);font-size:14px;}
+.crrow{display:flex;gap:10px;}
+.crrow .crfield{flex:1;}
+.crLockBtn,.crform .by{width:100%;background:var(--y);color:var(--bg);font-family:var(--fh);font-weight:800;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:14px;border-radius:10px;margin-top:6px;}
+.crLockBtn:disabled{opacity:.4;}
+.crBackBtn{width:100%;background:transparent;color:var(--sub);font-size:12px;padding:12px;margin-top:8px;}
+.crform{padding:16px;overflow-y:auto;flex:1;}
+.crphoto-preview{width:100%;height:120px;border-radius:8px;object-fit:cover;margin-top:8px;display:none;background:var(--card2);}
 .rc{background:var(--card);border-radius:12px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:transform .2s;}
 .rc:active{transform:scale(.98);}
 .rcth{width:100%;height:130px;position:relative;overflow:hidden;}
@@ -491,7 +538,7 @@ img{display:block;max-width:100%;}
 </nav>
 
 <!-- FAB -->
-<button id="fab" onclick="reqAuth()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create Ride</button>
+<button id="fab" onclick="openCreateRide()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create Ride</button>
 
 <!-- ══ HERO SCREEN ══ -->
 <div class="screen on" id="sh">
@@ -535,11 +582,31 @@ img{display:block;max-width:100%;}
   <div class="sec">
     <div class="seye">The Platform</div>
     <div class="stitle">BUILT AROUND HOW YOU <span>ACTUALLY RIDE</span></div>
-    <div class="fgrid">
-      <div class="fc" onclick="enterApp()"><div class="fc-i">🗺️</div><div class="fc-n">Routes</div><div class="fc-d">200+ curated Indian routes with dhabas, fuel stops and mechanics pinned.</div><div class="fc-a">Explore →</div></div>
-      <div class="fc" onclick="enterApp()"><div class="fc-i">📸</div><div class="fc-n">Ride Feed</div><div class="fc-d">Share rides with maps, stats and photos. Follow the best riders.</div><div class="fc-a">See rides →</div></div>
-      <div class="fc" onclick="enterApp()"><div class="fc-i">🏍️</div><div class="fc-n">Group Rides</div><div class="fc-d">Create rides, manage crew, RSVP. Replace the WhatsApp chaos.</div><div class="fc-a">Find rides →</div></div>
-      <div class="fc" onclick="enterApp()"><div class="fc-i">💬</div><div class="fc-n">Crew Chat</div><div class="fc-d">Private chat per ride. Text, photos, GPS. Accepted riders only.</div><div class="fc-a">Chat crew →</div></div>
+    <div class="fblocks">
+      <div class="fblock" onclick="enterApp()">
+        <div class="fblock-img" style="background-image:url('https://images.unsplash.com/photo-1643913236750-39f654883299?w=600&q=85&fit=crop');">
+          <div class="fblock-badge"><div><small>Distance</small><b>490 km</b></div></div>
+        </div>
+        <div class="fblock-body"><div class="fblock-title">Routes built<br><span>for the Himalayas</span></div><div class="fblock-desc">200+ curated Indian routes with dhabas, fuel stops and mechanics pinned along the way.</div><div class="fblock-link">Explore routes →</div></div>
+      </div>
+      <div class="fblock" onclick="enterApp()">
+        <div class="fblock-img" style="background-image:url('https://images.unsplash.com/photo-1598548841213-9cdbcdf8ec47?w=600&q=85&fit=crop');">
+          <div class="fblock-badge"><div><small>This Week</small><b>1.2K rides</b></div></div>
+        </div>
+        <div class="fblock-body"><div class="fblock-title">A feed that<br><span>actually rides</span></div><div class="fblock-desc">Share rides with maps, stats and photos. Follow the riders who are actually out there.</div><div class="fblock-link">See the feed →</div></div>
+      </div>
+      <div class="fblock" onclick="enterApp()">
+        <div class="fblock-img" style="background-image:url('https://images.unsplash.com/photo-1690540293162-bfb097e68a34?w=600&q=85&fit=crop');">
+          <div class="fblock-badge"><div><small>Open Rides</small><b>340 nearby</b></div></div>
+        </div>
+        <div class="fblock-body"><div class="fblock-title">Group rides,<br><span>run properly</span></div><div class="fblock-desc">Create rides, manage your crew, RSVP. Replace the WhatsApp chaos for good.</div><div class="fblock-link">Find a ride →</div></div>
+      </div>
+      <div class="fblock" onclick="enterApp()">
+        <div class="fblock-img" style="background-image:url('https://images.unsplash.com/photo-1558980664-3a031cf67ea8?w=600&q=85&fit=crop');">
+          <div class="fblock-badge"><div><small>Crew Only</small><b>Private chat</b></div></div>
+        </div>
+        <div class="fblock-body"><div class="fblock-title">One chat.<br><span>Zero noise.</span></div><div class="fblock-desc">Private chat per ride. Text, photos, GPS. Accepted riders only — nothing else.</div><div class="fblock-link">See how it works →</div></div>
+      </div>
     </div>
   </div>
 
@@ -547,10 +614,10 @@ img{display:block;max-width:100%;}
   <div style="padding:0 0 48px;">
     <div style="padding:0 20px;"><div class="seye">The Routes</div><div class="stitle" style="margin-bottom:16px;">LEGENDARY <span>ROADS</span></div></div>
     <div class="rtscroll">
-      <div class="rp" onclick="enterApp()"><div class="rpimg" style="background-image:url('https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=400&q=85&fit=crop');"></div><div class="rpb"><div class="rpd">EXTREME</div><div class="rpn">Manali – Leh</div><div class="rpss"><div class="rps"><b>490km</b>Distance</div><div class="rps"><b>5,328m</b>Elevation</div></div></div></div>
-      <div class="rp" onclick="enterApp()"><div class="rpimg" style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=85&fit=crop');"></div><div class="rpb"><div class="rpd">HARD</div><div class="rpn">Spiti Circuit</div><div class="rpss"><div class="rps"><b>580km</b>Distance</div><div class="rps"><b>4,587m</b>Elevation</div></div></div></div>
-      <div class="rp" onclick="enterApp()"><div class="rpimg" style="background-image:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=85&fit=crop');"></div><div class="rpb"><div class="rpd">MODERATE</div><div class="rpn">Coorg Loop</div><div class="rpss"><div class="rps"><b>212km</b>Distance</div><div class="rps"><b>1,100m</b>Elevation</div></div></div></div>
-      <div class="rp" onclick="enterApp()"><div class="rpimg" style="background-image:url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=85&fit=crop');"></div><div class="rpb"><div class="rpd">EXTREME</div><div class="rpn">Zanskar Loop</div><div class="rpss"><div class="rps"><b>680km</b>Distance</div><div class="rps"><b>6,800m</b>Elevation</div></div></div></div>
+      <div class="rp" onclick="enterApp()"><div class="rpimg" style="background-image:url('https://images.unsplash.com/photo-1643913236750-39f654883299?w=400&q=85&fit=crop');"><span class="rpd-float">Extreme</span></div><div class="rpb"><div class="rpn">Manali – Leh</div><div class="rpss"><div class="rps"><b>490km</b>Distance</div><div class="rps"><b>5,328m</b>Elevation</div></div></div></div>
+      <div class="rp" onclick="enterApp()"><div class="rpimg" style="background-image:url('https://images.unsplash.com/photo-1547906250-5bdf142c606d?w=400&q=85&fit=crop');"><span class="rpd-float">Hard</span></div><div class="rpb"><div class="rpn">Spiti Circuit</div><div class="rpss"><div class="rps"><b>580km</b>Distance</div><div class="rps"><b>4,587m</b>Elevation</div></div></div></div>
+      <div class="rp" onclick="enterApp()"><div class="rpimg" style="background-image:url('https://images.unsplash.com/photo-1690540293162-bfb097e68a34?w=400&q=85&fit=crop');"><span class="rpd-float">Moderate</span></div><div class="rpb"><div class="rpn">Coorg Loop</div><div class="rpss"><div class="rps"><b>212km</b>Distance</div><div class="rps"><b>1,100m</b>Elevation</div></div></div></div>
+      <div class="rp" onclick="enterApp()"><div class="rpimg" style="background-image:url('https://images.unsplash.com/photo-1558981285-501cd9af9426?w=400&q=85&fit=crop');"><span class="rpd-float">Extreme</span></div><div class="rpb"><div class="rpn">Zanskar Loop</div><div class="rpss"><div class="rps"><b>680km</b>Distance</div><div class="rps"><b>6,800m</b>Elevation</div></div></div></div>
     </div>
   </div>
 
@@ -558,9 +625,11 @@ img{display:block;max-width:100%;}
   <div class="sec" style="background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
     <div class="seye">Simple</div>
     <div class="stitle">GET ON THE <span>ROAD</span></div>
-    <div class="hiw-row"><div class="hiw-n">1</div><div><div class="hiw-name">Build Your Rider Profile</div><div class="hiw-d">Add your bike, experience, riding style. 2 minutes. Zero friction.</div></div></div>
-    <div class="hiw-row"><div class="hiw-n">2</div><div><div class="hiw-name">Discover Routes & Rides</div><div class="hiw-d">Browse curated routes. Find group rides with real riders in your city.</div></div></div>
-    <div class="hiw-row"><div class="hiw-n">3</div><div><div class="hiw-name">Ride. Share. Repeat.</div><div class="hiw-d">Join rides, chat with crew, post your ride, find the next one.</div></div></div>
+    <div class="hiw-photo">
+      <div class="hiw-step"><div class="hiw-n">1</div><div><div class="hiw-name">Build Your Rider Profile</div><div class="hiw-d">Add your bike, experience, riding style. 2 minutes. Zero friction.</div></div></div>
+      <div class="hiw-step"><div class="hiw-n">2</div><div><div class="hiw-name">Discover Routes & Rides</div><div class="hiw-d">Browse curated routes. Find group rides with real riders in your city.</div></div></div>
+      <div class="hiw-step"><div class="hiw-n">3</div><div><div class="hiw-name">Ride. Share. Repeat.</div><div class="hiw-d">Join rides, chat with crew, post your ride, find the next one.</div></div></div>
+    </div>
   </div>
 
   <!-- MANIFESTO -->
@@ -598,13 +667,16 @@ img{display:block;max-width:100%;}
   </div>
 
   <!-- TESTIMONIALS -->
-  <div class="sec">
-    <div class="seye">Real Riders</div>
-    <div class="stitle">STRAIGHT FROM <span>THE CREW</span></div>
-    <div class="tlist">
-      <div class="tc"><div class="tst">★★★★★</div><div class="ttxt">"Bro the Spiti route had every fuel stop and dhaba pinned. Rode it last month — didn't have to ask a single person for directions."</div><div class="trider"><img class="tav" src="https://i.pravatar.cc/60?img=33" alt=""><div><div class="tname">Arjun Mehta</div><div class="tbike">RE Himalayan 450 · Delhi</div></div></div></div>
-      <div class="tc"><div class="tst">★★★★★</div><div class="ttxt">"We had 4 WhatsApp groups just for one ride. Now it's all in one place. Our group actually shows up on time."</div><div class="trider"><img class="tav" src="https://i.pravatar.cc/60?img=47" alt=""><div><div class="tname">Priya Nair</div><div class="tbike">KTM Duke 390 · Bangalore</div></div></div></div>
-      <div class="tc"><div class="tst">★★★★★</div><div class="ttxt">"The Hayabusa guys in my club were already on it. Downloaded it to fit in. Ended up being the best biker decision I've made."</div><div class="trider"><img class="tav" src="https://i.pravatar.cc/60?img=12" alt=""><div><div class="tname">Vikram Singh</div><div class="tbike">Triumph Tiger 900 · Mumbai</div></div></div></div>
+  <div class="tstrip">
+    <div class="tstrip-bg"></div>
+    <div class="sec">
+      <div class="seye">Real Riders</div>
+      <div class="stitle">STRAIGHT FROM <span>THE CREW</span></div>
+      <div class="tlist">
+        <div class="tc"><div class="tst">★★★★★</div><div class="ttxt">"Bro the Spiti route had every fuel stop and dhaba pinned. Rode it last month — didn't have to ask a single person for directions."</div><div class="trider"><img class="tav" src="https://i.pravatar.cc/60?img=33" alt=""><div><div class="tname">Arjun Mehta</div><div class="tbike">RE Himalayan 450 · Delhi</div></div></div></div>
+        <div class="tc"><div class="tst">★★★★★</div><div class="ttxt">"We had 4 WhatsApp groups just for one ride. Now it's all in one place. Our group actually shows up on time."</div><div class="trider"><img class="tav" src="https://i.pravatar.cc/60?img=47" alt=""><div><div class="tname">Priya Nair</div><div class="tbike">KTM Duke 390 · Bangalore</div></div></div></div>
+        <div class="tc"><div class="tst">★★★★★</div><div class="ttxt">"The Hayabusa guys in my club were already on it. Downloaded it to fit in. Ended up being the best biker decision I've made."</div><div class="trider"><img class="tav" src="https://i.pravatar.cc/60?img=12" alt=""><div><div class="tname">Vikram Singh</div><div class="tbike">Triumph Tiger 900 · Mumbai</div></div></div></div>
+      </div>
     </div>
   </div>
 
@@ -655,22 +727,57 @@ img{display:block;max-width:100%;}
 <!-- ══ FEED SCREEN ══ -->
 <div class="screen" id="sf">
   <div class="feedhd"><div class="feedt">rides</div><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-  <div class="post"><div class="phd"><div class="pav"><img src="https://i.pravatar.cc/80?img=33" alt=""></div><div><div class="pun">Arjun Mehta</div><div class="pbk">RE Himalayan 450 · Delhi</div></div><div class="pmore">···</div></div><img class="pimg" src="https://images.unsplash.com/photo-1580674285054-bed31e145f59?w=900&q=85&fit=crop&sat=-10&r=0" alt=""><div class="ppills"><div class="pill"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg><span>487 KM</span></div><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>2 Days</span></div><div class="pill"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>5,200m</span></div></div><div class="pacts"><button class="pa" id="l1" onclick="like('l1')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>847</button><button class="pa" onclick="reqAuth()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>42</button></div><div class="pcap"><strong>Arjun Mehta</strong> Spiti in monsoon hits different. Roads rough, weather unpredictable — every turn worth it. 🏔️</div></div>
-  <div class="post"><div class="phd"><div class="pav"><img src="https://i.pravatar.cc/80?img=47" alt=""></div><div><div class="pun">Priya Nair</div><div class="pbk">KTM Duke 390 · Bangalore</div></div><div class="pmore">···</div></div><img class="pimg" src="https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=800&q=85&fit=crop" alt=""><div class="ppills"><div class="pill"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg><span>212 KM</span></div><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>5H 20M</span></div><div class="pill"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>1,100m</span></div></div><div class="pacts"><button class="pa" id="l2" onclick="like('l2')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>512</button><button class="pa" onclick="reqAuth()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>28</button></div><div class="pcap"><strong>Priya Nair</strong> Coorg coffee roads Sunday morning. Misty ghats, empty roads, Duke absolutely flying. 🌿</div></div>
-  <div class="post"><div class="phd"><div class="pav"><img src="https://i.pravatar.cc/80?img=12" alt=""></div><div><div class="pun">Vikram Singh</div><div class="pbk">Triumph Tiger 900 · Mumbai</div></div><div class="pmore">···</div></div><img class="pimg" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=85&fit=crop" alt=""><div class="ppills"><div class="pill"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg><span>892 KM</span></div><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>4 Days</span></div><div class="pill"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>6,800m</span></div></div><div class="pacts"><button class="pa" id="l3" onclick="like('l3')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>1.2K</button><button class="pa" onclick="reqAuth()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>89</button></div><div class="pcap"><strong>Vikram Singh</strong> Khardung La summit. 18,379 ft. Four days of gravel, zero signal. Tiger didn't miss a beat. 🏔️💛</div></div>
+  <div class="post"><div class="phd"><div class="pav"><img src="https://i.pravatar.cc/80?img=33" alt=""></div><div><div class="pun">Arjun Mehta</div><div class="pbk">RE Himalayan 450 · Delhi</div></div><div class="pmore">···</div></div><img class="pimg" src="https://images.unsplash.com/photo-1643913236750-39f654883299?w=900&q=85&fit=crop&sat=-10&r=0" alt=""><div class="ppills"><div class="pill"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg><span>487 KM</span></div><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>2 Days</span></div><div class="pill"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>5,200m</span></div></div><div class="pacts"><button class="pa" id="l1" onclick="like('l1')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>847</button><button class="pa" onclick="reqAuth()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>42</button></div><div class="pcap"><strong>Arjun Mehta</strong> Spiti in monsoon hits different. Roads rough, weather unpredictable — every turn worth it. 🏔️</div></div>
+  <div class="post"><div class="phd"><div class="pav"><img src="https://i.pravatar.cc/80?img=47" alt=""></div><div><div class="pun">Priya Nair</div><div class="pbk">KTM Duke 390 · Bangalore</div></div><div class="pmore">···</div></div><img class="pimg" src="https://images.unsplash.com/photo-1598548841213-9cdbcdf8ec47?w=800&q=85&fit=crop" alt=""><div class="ppills"><div class="pill"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg><span>212 KM</span></div><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>5H 20M</span></div><div class="pill"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>1,100m</span></div></div><div class="pacts"><button class="pa" id="l2" onclick="like('l2')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>512</button><button class="pa" onclick="reqAuth()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>28</button></div><div class="pcap"><strong>Priya Nair</strong> Coorg coffee roads Sunday morning. Misty ghats, empty roads, Duke absolutely flying. 🌿</div></div>
+  <div class="post"><div class="phd"><div class="pav"><img src="https://i.pravatar.cc/80?img=12" alt=""></div><div><div class="pun">Vikram Singh</div><div class="pbk">Triumph Tiger 900 · Mumbai</div></div><div class="pmore">···</div></div><img class="pimg" src="https://images.unsplash.com/photo-1558981285-501cd9af9426?w=800&q=85&fit=crop" alt=""><div class="ppills"><div class="pill"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg><span>892 KM</span></div><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>4 Days</span></div><div class="pill"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>6,800m</span></div></div><div class="pacts"><button class="pa" id="l3" onclick="like('l3')"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>1.2K</button><button class="pa" onclick="reqAuth()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>89</button></div><div class="pcap"><strong>Vikram Singh</strong> Khardung La summit. 18,379 ft. Four days of gravel, zero signal. Tiger didn't miss a beat. 🏔️💛</div></div>
 </div>
 
 <!-- ══ RIDES SCREEN ══ -->
 <div class="screen" id="sr">
   <div class="rtabs"><div class="rtab on" onclick="rtab(this,'disc')">Discover</div><div class="rtab" onclick="rtab(this,'mine')">My Rides</div></div>
   <div id="tab-disc" class="rlist">
-    <div class="rc" onclick="go('sc')"><div class="rcth"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=85&fit=crop&sat=-10&r=1" alt=""><span class="rcd dx">Extreme</span></div><div class="rcb"><div class="rcrn">Manali → Leh → Khardung La</div><div class="rcmeta"><div class="rcmi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Aug 15</div><div class="rcmi"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>490 KM</div><div class="rcmi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7 Days</div></div><div class="rcorg"><div class="rcoav" style="background-image:url('https://i.pravatar.cc/40?img=33');"></div><div class="rcon">by <strong>Delhi RE Riders</strong></div></div><div class="rcft"><div style="display:flex;align-items:center;"><div class="rcavs"><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=11');"></div><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=22');"></div><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=44');"></div></div><span class="rcct">14/20</span></div><button class="bjoin" onclick="event.stopPropagation();reqAuth()">Request to Join</button></div></div></div>
-    <div class="rc" onclick="go('sc')"><div class="rcth"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=900&q=85&fit=crop&sat=-10&r=2" alt=""><span class="rcd dm">Moderate</span></div><div class="rcb"><div class="rcrn">Bangalore → Coorg → Madikeri</div><div class="rcmeta"><div class="rcmi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Jul 20</div><div class="rcmi"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>212 KM</div><div class="rcmi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>1 Day</div></div><div class="rcorg"><div class="rcoav" style="background-image:url('https://i.pravatar.cc/40?img=47');"></div><div class="rcon">by <strong>Priya Nair</strong></div></div><div class="rcft"><div style="display:flex;align-items:center;"><div class="rcavs"><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=55');"></div><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=56');"></div></div><span class="rcct">8/15</span></div><button class="bjoin" onclick="event.stopPropagation();reqAuth()">Request to Join</button></div></div></div>
-    <div class="rc" onclick="go('sc')"><div class="rcth"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=85&fit=crop&sat=-10&r=3" alt=""><span class="rcd dh">Hard</span></div><div class="rcb"><div class="rcrn">Pune → Mahabaleshwar → NH66</div><div class="rcmeta"><div class="rcmi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Aug 3</div><div class="rcmi"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>340 KM</div><div class="rcmi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>2 Days</div></div><div class="rcorg"><div class="rcoav" style="background-image:url('https://i.pravatar.cc/40?img=12');"></div><div class="rcon">by <strong>Mumbai Riders Collective</strong></div></div><div class="rcft"><div style="display:flex;align-items:center;"><div class="rcavs"><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=60');"></div><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=61');"></div></div><span class="rcct">22/25</span></div><button class="bjoin done" onclick="event.stopPropagation()">Requested ✓</button></div></div></div>
+    <div class="rc" onclick="go('sc')"><div class="rcth"><img src="https://images.unsplash.com/photo-1547906250-5bdf142c606d?w=900&q=85&fit=crop&sat=-10&r=1" alt=""><span class="rcd dx">Extreme</span></div><div class="rcb"><div class="rcrn">Manali → Leh → Khardung La</div><div class="rcmeta"><div class="rcmi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Aug 15</div><div class="rcmi"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>490 KM</div><div class="rcmi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>7 Days</div></div><div class="rcorg"><div class="rcoav" style="background-image:url('https://i.pravatar.cc/40?img=33');"></div><div class="rcon">by <strong>Delhi RE Riders</strong></div></div><div class="rcft"><div style="display:flex;align-items:center;"><div class="rcavs"><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=11');"></div><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=22');"></div><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=44');"></div></div><span class="rcct">14/20</span></div><button class="bjoin" onclick="event.stopPropagation();reqAuth()">Request to Join</button></div></div></div>
+    <div class="rc" onclick="go('sc')"><div class="rcth"><img src="https://images.unsplash.com/photo-1690540293162-bfb097e68a34?w=900&q=85&fit=crop&sat=-10&r=2" alt=""><span class="rcd dm">Moderate</span></div><div class="rcb"><div class="rcrn">Bangalore → Coorg → Madikeri</div><div class="rcmeta"><div class="rcmi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Jul 20</div><div class="rcmi"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>212 KM</div><div class="rcmi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>1 Day</div></div><div class="rcorg"><div class="rcoav" style="background-image:url('https://i.pravatar.cc/40?img=47');"></div><div class="rcon">by <strong>Priya Nair</strong></div></div><div class="rcft"><div style="display:flex;align-items:center;"><div class="rcavs"><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=55');"></div><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=56');"></div></div><span class="rcct">8/15</span></div><button class="bjoin" onclick="event.stopPropagation();reqAuth()">Request to Join</button></div></div></div>
+    <div class="rc" onclick="go('sc')"><div class="rcth"><img src="https://images.unsplash.com/photo-1558981285-501cd9af9426?w=900&q=85&fit=crop&sat=-10&r=3" alt=""><span class="rcd dh">Hard</span></div><div class="rcb"><div class="rcrn">Pune → Mahabaleshwar → NH66</div><div class="rcmeta"><div class="rcmi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Aug 3</div><div class="rcmi"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>340 KM</div><div class="rcmi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>2 Days</div></div><div class="rcorg"><div class="rcoav" style="background-image:url('https://i.pravatar.cc/40?img=12');"></div><div class="rcon">by <strong>Mumbai Riders Collective</strong></div></div><div class="rcft"><div style="display:flex;align-items:center;"><div class="rcavs"><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=60');"></div><div class="mav" style="background-image:url('https://i.pravatar.cc/30?img=61');"></div></div><span class="rcct">22/25</span></div><button class="bjoin done" onclick="event.stopPropagation()">Requested ✓</button></div></div></div>
     <div style="height:14px;"></div>
   </div>
-  <div id="tab-mine" style="display:none;"><div class="empt"><div class="empt-ic">🏍️</div><div class="empt-t">No Rides Yet</div><div class="empt-s">Create or join a ride to start building your crew.</div></div></div>
-  <button id="fab" class="show" onclick="reqAuth()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create Ride</button>
+  <div id="tab-mine" style="display:none;">
+    <div id="tab-mine-empty" class="empt"><div class="empt-ic">🏍️</div><div class="empt-t">No Rides Yet</div><div class="empt-s">Create or join a ride to start building your crew.</div></div>
+    <div id="tab-mine-list" class="rlist" style="display:none;"></div>
+  </div>
+  <button id="fab" class="show" onclick="openCreateRide()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create Ride</button>
+</div>
+
+<!-- ══ CREATE RIDE ══ -->
+<div class="screen" id="scr">
+  <div class="chd"><div class="chbk" onclick="crBack()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div><div class="chhn">Create Ride</div><div class="chhm" id="crStepLabel">Step 1 · Set your route</div></div></div>
+
+  <div id="cr-step1" class="crstep">
+    <div id="crmap"></div>
+    <div class="crpanel">
+      <div class="crfield"><label>Starting Point</label><input id="crStart" placeholder="Search or tap the map"></div>
+      <div id="crStopsList"></div>
+      <button type="button" class="crAddStop" onclick="addCrStop()">+ Add Stop</button>
+      <div class="crfield"><label>Destination</label><input id="crEnd" placeholder="Search or tap the map"></div>
+      <div id="crSummary" class="crsummary"><span id="crSumDist">0 KM</span><span id="crSumDur">0 hrs</span></div>
+      <button type="button" class="crLockBtn" id="crLockBtn" onclick="lockCrRoute()" disabled>Continue</button>
+    </div>
+  </div>
+
+  <div id="cr-step2" class="crstep" style="display:none;">
+    <div class="crform">
+      <div class="crfield"><label>Cover Photo URL</label><input id="crPhoto" placeholder="Paste an image link" oninput="crPreviewPhoto()"><img id="crPhotoPreview" class="crphoto-preview"></div>
+      <div class="crfield"><label>Ride Title</label><input id="crTitle" placeholder="e.g. Manali to Leh"></div>
+      <div class="crfield"><label>Description</label><textarea id="crDesc" placeholder="Tell riders what to expect on this route..."></textarea></div>
+      <div class="crrow">
+        <div class="crfield"><label>Difficulty</label><select id="crDiff"><option>Easy</option><option>Moderate</option><option selected>Hard</option><option>Extreme</option></select></div>
+        <div class="crfield"><label>Ride Date</label><input id="crDate" type="date"></div>
+      </div>
+      <div class="crfield"><label>Max Riders</label><input id="crMax" type="number" value="15" min="2" max="200"></div>
+      <button type="button" class="by" onclick="postCrRide()">Post Ride</button>
+      <button type="button" class="crBackBtn" onclick="crBackToMap()">← Edit Route</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ NOTIFICATIONS SCREEN ══ -->
@@ -699,7 +806,7 @@ img{display:block;max-width:100%;}
     <div class="brow"><div class="bic"><svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17H3v-5l4-4h6l3 3"/><path d="M9 8h6l3 4h-9z"/></svg></div><div><div class="bn">KTM Duke 200</div><div class="by2">2021 · Naked Street</div></div></div>
   </div>
   <div class="psect">Recent Rides</div>
-  <div class="post" style="margin-bottom:24px;"><div class="phd"><div class="pav"><img src="https://i.pravatar.cc/80?img=33" alt=""></div><div><div class="pun">Spiti Valley Circuit</div><div class="pbk">487 KM · Jun 12, 2026</div></div></div><img class="pimg" src="https://images.unsplash.com/photo-1602088113235-229c19758e9f?w=900&q=85&fit=crop&sat=-10&r=4" alt="" style="height:170px;object-fit:cover;"></div>
+  <div class="post" style="margin-bottom:24px;"><div class="phd"><div class="pav"><img src="https://i.pravatar.cc/80?img=33" alt=""></div><div><div class="pun">Spiti Valley Circuit</div><div class="pbk">487 KM · Jun 12, 2026</div></div></div><img class="pimg" src="https://images.unsplash.com/photo-1598548841213-9cdbcdf8ec47?w=900&q=85&fit=crop&sat=-10&r=4" alt="" style="height:170px;object-fit:cover;"></div>
 </div>
 
 <!-- ══ LOGIN SCREEN ══ -->
@@ -763,7 +870,7 @@ function go(id) {
   document.getElementById(id).classList.add('on');
   cur = id;
 
-  const noBar = ['sh','sl','so','sc'];
+  const noBar = ['sh','sl','so','sc','scr'];
   const isBar = !noBar.includes(id);
   document.getElementById('tbar').classList.toggle('hide', !isBar);
   document.getElementById('bnav').classList.toggle('hide', !isBar);
@@ -783,6 +890,246 @@ function enterApp() { go('sm'); }
 function reqAuth() {
   if (!loggedIn) document.getElementById('modal').classList.add('open');
 }
+
+/* ── CREATE RIDE (Google Maps + Places + Directions) ──
+   Drop your key in below. Get one at console.cloud.google.com
+   → enable "Maps JavaScript API", "Places API", "Directions API", "Geocoding API"
+   → restrict the key to your domain before going live. */
+const GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY';
+
+let crMap, crDirectionsService, crDirectionsRenderer, crGeocoder;
+let crAcStart, crAcEnd;
+let crStartPlace = null, crEndPlace = null, crStops = [], crRouteData = null;
+let crScriptRequested = false;
+
+const crMapStyle = [
+  {elementType:'geometry',stylers:[{color:'#181c2a'}]},
+  {elementType:'labels.text.stroke',stylers:[{color:'#08090f'}]},
+  {elementType:'labels.text.fill',stylers:[{color:'#8a8fa3'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#2a2f42'}]},
+  {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#3a3f56'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#0d0f18'}]},
+  {featureType:'poi',stylers:[{visibility:'off'}]},
+  {featureType:'transit',stylers:[{visibility:'off'}]},
+  {featureType:'administrative',elementType:'geometry',stylers:[{color:'#333850'}]}
+];
+
+function openCreateRide() {
+  document.getElementById('modal').classList.remove('open');
+  go('scr');
+  resetCrForm();
+  loadGoogleMaps();
+}
+
+function crBack() {
+  if (document.getElementById('cr-step2').style.display === 'block') { crBackToMap(); return; }
+  go('sr');
+}
+
+function loadGoogleMaps() {
+  if (window.google && window.google.maps) { initCrMap(); return; }
+  const box = document.getElementById('crmap');
+  if (!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY') {
+    box.innerHTML = '<div class="crNoKey">Google Maps API key not set yet.<br>Add it to <code>GOOGLE_MAPS_API_KEY</code> near the top of the script, then reload.<br><br>Needs: Maps JavaScript API, Places API, Directions API, Geocoding API enabled.</div>';
+    return;
+  }
+  if (crScriptRequested) return;
+  crScriptRequested = true;
+  window.initCrMap = initCrMap;
+  const s = document.createElement('script');
+  s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places&callback=initCrMap`;
+  s.async = true;
+  s.onerror = () => { box.innerHTML = '<div class="crNoKey">Couldn\'t load Google Maps.<br>Check your API key, billing, and that the required APIs are enabled.</div>'; };
+  document.head.appendChild(s);
+}
+
+function initCrMap() {
+  const box = document.getElementById('crmap');
+  box.innerHTML = '';
+  crMap = new google.maps.Map(box, { center:{lat:22,lng:78}, zoom:5, styles:crMapStyle, disableDefaultUI:true, zoomControl:true, gestureHandling:'greedy' });
+  crGeocoder = new google.maps.Geocoder();
+  crDirectionsService = new google.maps.DirectionsService();
+  crDirectionsRenderer = new google.maps.DirectionsRenderer({
+    map:crMap, suppressMarkers:false,
+    polylineOptions:{ strokeColor:'#D4FF00', strokeWeight:4 }
+  });
+
+  const opts = { componentRestrictions:{country:'in'}, fields:['geometry','formatted_address','name'] };
+  crAcStart = new google.maps.places.Autocomplete(document.getElementById('crStart'), opts);
+  crAcStart.addListener('place_changed', () => { crStartPlace = crAcStart.getPlace(); tryComputeCrRoute(); });
+
+  crAcEnd = new google.maps.places.Autocomplete(document.getElementById('crEnd'), opts);
+  crAcEnd.addListener('place_changed', () => { crEndPlace = crAcEnd.getPlace(); tryComputeCrRoute(); });
+
+  crMap.addListener('click', (e) => {
+    crGeocoder.geocode({ location:e.latLng }, (results, status) => {
+      if (status !== 'OK' || !results[0]) return;
+      const place = { geometry:{ location:e.latLng }, formatted_address:results[0].formatted_address };
+      if (!crStartPlace) {
+        crStartPlace = place;
+        document.getElementById('crStart').value = place.formatted_address;
+      } else if (!crEndPlace) {
+        crEndPlace = place;
+        document.getElementById('crEnd').value = place.formatted_address;
+      } else {
+        addCrStop();
+        const s = crStops[crStops.length - 1];
+        s.place = place;
+        s.input.value = place.formatted_address;
+      }
+      tryComputeCrRoute();
+    });
+  });
+}
+
+function addCrStop() {
+  if (!window.google) return;
+  const idx = crStops.length;
+  const row = document.createElement('div');
+  row.className = 'crstoprow';
+  const inputId = 'crStopInput' + idx;
+  row.innerHTML = `<input id="${inputId}" placeholder="Stop ${idx+1} — search or tap the map"><button type="button" onclick="removeCrStop(${idx})">✕</button>`;
+  document.getElementById('crStopsList').appendChild(row);
+  const input = document.getElementById(inputId);
+  const ac = new google.maps.places.Autocomplete(input, { componentRestrictions:{country:'in'}, fields:['geometry','formatted_address','name'] });
+  const stopObj = { input, place:null };
+  ac.addListener('place_changed', () => { stopObj.place = ac.getPlace(); tryComputeCrRoute(); });
+  crStops.push(stopObj);
+}
+
+function removeCrStop(idx) {
+  crStops.splice(idx, 1);
+  const list = document.getElementById('crStopsList');
+  list.innerHTML = '';
+  const kept = crStops; crStops = [];
+  kept.forEach(s => {
+    addCrStop();
+    const added = crStops[crStops.length - 1];
+    added.place = s.place;
+    added.input.value = s.place ? s.place.formatted_address : '';
+  });
+  tryComputeCrRoute();
+}
+
+function tryComputeCrRoute() {
+  if (!crStartPlace || !crEndPlace || !crDirectionsService) return;
+  const waypoints = crStops.filter(s => s.place).map(s => ({ location:s.place.geometry.location, stopover:true }));
+  crDirectionsService.route({
+    origin: crStartPlace.geometry.location,
+    destination: crEndPlace.geometry.location,
+    waypoints,
+    optimizeWaypoints: false,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, (result, status) => {
+    if (status !== 'OK') { document.getElementById('crLockBtn').disabled = true; return; }
+    crDirectionsRenderer.setDirections(result);
+    let distM = 0, durS = 0;
+    result.routes[0].legs.forEach(l => { distM += l.distance.value; durS += l.duration.value; });
+    const distKm = Math.round(distM / 1000);
+    const durHr = (durS / 3600).toFixed(1);
+    document.getElementById('crSumDist').textContent = distKm + ' KM';
+    document.getElementById('crSumDur').textContent = durHr + ' hrs';
+    document.getElementById('crSummary').style.display = 'flex';
+    crRouteData = {
+      start: { lat:crStartPlace.geometry.location.lat(), lng:crStartPlace.geometry.location.lng(), address:crStartPlace.formatted_address || crStartPlace.name },
+      end: { lat:crEndPlace.geometry.location.lat(), lng:crEndPlace.geometry.location.lng(), address:crEndPlace.formatted_address || crEndPlace.name },
+      stops: crStops.filter(s => s.place).map(s => ({ lat:s.place.geometry.location.lat(), lng:s.place.geometry.location.lng(), address:s.place.formatted_address || s.place.name })),
+      polyline: result.routes[0].overview_polyline,
+      distanceKm: distKm,
+      durationHr: durHr
+    };
+    document.getElementById('crLockBtn').disabled = false;
+  });
+}
+
+function lockCrRoute() {
+  if (!crRouteData) return;
+  document.getElementById('cr-step1').style.display = 'none';
+  document.getElementById('cr-step2').style.display = 'flex';
+  document.getElementById('crStepLabel').textContent = 'Step 2 · Ride details';
+}
+
+function crBackToMap() {
+  document.getElementById('cr-step1').style.display = 'flex';
+  document.getElementById('cr-step2').style.display = 'none';
+  document.getElementById('crStepLabel').textContent = 'Step 1 · Set your route';
+}
+
+function crPreviewPhoto() {
+  const url = document.getElementById('crPhoto').value.trim();
+  const img = document.getElementById('crPhotoPreview');
+  if (url) { img.src = url; img.style.display = 'block'; } else { img.style.display = 'none'; }
+}
+
+function postCrRide() {
+  if (!loggedIn) { reqAuth(); return; }
+  if (!crRouteData) return;
+  const title = document.getElementById('crTitle').value.trim() || (crRouteData.start.address.split(',')[0] + ' → ' + crRouteData.end.address.split(',')[0]);
+  const desc = document.getElementById('crDesc').value.trim();
+  const photo = document.getElementById('crPhoto').value.trim() || 'https://images.unsplash.com/photo-1643913236750-39f654883299?w=900&q=85&fit=crop';
+  const diff = document.getElementById('crDiff').value;
+  const date = document.getElementById('crDate').value;
+  const max = parseInt(document.getElementById('crMax').value) || 15;
+
+  const ride = { id:'ride_' + Date.now(), title, desc, photo, diff, date, max, route:crRouteData, createdAt:Date.now() };
+
+  const saved = JSON.parse(localStorage.getItem('leynRides') || '[]');
+  saved.unshift(ride);
+  localStorage.setItem('leynRides', JSON.stringify(saved));
+
+  renderCreatedRide(ride);
+  go('sr');
+}
+
+function renderCreatedRide(ride) {
+  const diffClass = { Easy:'de', Moderate:'dm', Hard:'dh', Extreme:'dx' }[ride.diff] || 'dm';
+  const html = `<div class="rc" onclick="go('sc')">
+    <div class="rcth"><img src="${ride.photo}" alt=""><span class="rcd ${diffClass}">${ride.diff}</span></div>
+    <div class="rcb">
+      <div class="rcrn">${ride.title}</div>
+      <div class="rcmeta">
+        <div class="rcmi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${ride.date || 'TBD'}</div>
+        <div class="rcmi"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>${ride.route.distanceKm} KM</div>
+        <div class="rcmi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${ride.route.durationHr}h</div>
+      </div>
+      <div class="rcorg"><div class="rcoav" style="background-image:url('https://i.pravatar.cc/40?img=15');"></div><div class="rcon">by <strong>You</strong></div></div>
+      <div class="rcft"><span class="rcct">0/${ride.max}</span><button class="bjoin" onclick="event.stopPropagation();reqAuth()">Request to Join</button></div>
+    </div>
+  </div>`;
+
+  document.getElementById('tab-disc').insertAdjacentHTML('afterbegin', html);
+
+  document.getElementById('tab-mine-empty').style.display = 'none';
+  const mineList = document.getElementById('tab-mine-list');
+  mineList.style.display = 'block';
+  mineList.insertAdjacentHTML('afterbegin', html);
+}
+
+function resetCrForm() {
+  crStartPlace = null; crEndPlace = null; crStops = []; crRouteData = null;
+  document.getElementById('cr-step1').style.display = 'flex';
+  document.getElementById('cr-step2').style.display = 'none';
+  document.getElementById('crStepLabel').textContent = 'Step 1 · Set your route';
+  document.getElementById('crStart').value = '';
+  document.getElementById('crEnd').value = '';
+  document.getElementById('crStopsList').innerHTML = '';
+  document.getElementById('crSummary').style.display = 'none';
+  document.getElementById('crLockBtn').disabled = true;
+  document.getElementById('crTitle').value = '';
+  document.getElementById('crDesc').value = '';
+  document.getElementById('crPhoto').value = '';
+  document.getElementById('crPhotoPreview').style.display = 'none';
+  document.getElementById('crMax').value = 15;
+  if (crDirectionsRenderer) crDirectionsRenderer.set('directions', null);
+}
+
+/* Restore any rides created in a previous session */
+(function loadSavedRides() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('leynRides') || '[]');
+    if (saved.length) window.addEventListener('DOMContentLoaded', () => saved.slice().reverse().forEach(renderCreatedRide));
+  } catch (e) {}
+})();
 
 /* ── MAP ── */
 function initMap() {
